@@ -56,15 +56,15 @@ exports.configure = async (configs, drivers=['dhcpd', 'interfaces_d', 'netplan']
     })
 
   var net_configs=[];
-  if(drivers.indexOf('dhcpd')){
+  if(drivers.indexOf('dhcpd')>=0){
     net_configs.push(dhcpcd.configure(configs));
   }
 
-  if(drivers.indexOf('interfaces_d')){
+  if(drivers.indexOf('interfaces_d')>=0){
     net_configs.push(interfaces_d.configure(configs));
   }
 
-  if(drivers.indexOf('netplan')){
+  if(drivers.indexOf('netplan')>=0){
     net_configs.push(netplan.configure(configs));
   }
 
