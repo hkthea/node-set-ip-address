@@ -5,7 +5,7 @@ var dhcpcd = require('./dhcpcd/index.js')
 var netplan = require('./netplan/index.js')
 var { promisify } = require('util')
 
-exports.configure = async (configs) => {
+exports.configure = async (configs, drivers=['dhcpd', 'interfaces_d', 'netplan']) => {
 
   if (typeof configs == 'object' && !Array.isArray(configs))
     configs = [configs]
@@ -55,11 +55,20 @@ exports.configure = async (configs) => {
       return ret
     })
 
-  await Promise.all([
-    dhcpcd.configure(configs),
-    interfaces_d.configure(configs),
-    netplan.configure(configs)
-  ])
+  var net_configs=[];
+  if(drivers.indexOf('dhcpd')){
+    net_configs.push(dhcpcd.configure(configs));
+  }
+
+  if(drivers.indexOf('interfaces_d')){
+    net_configs.push(interfaces_d.configure(configs));
+  }
+
+  if(drivers.indexOf('netplan')){
+    net_configs.push(netplan.configure(configs));
+  }
+
+  await Promise.all(net_configs);
 
 }
 
